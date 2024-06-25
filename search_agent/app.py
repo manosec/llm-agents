@@ -27,9 +27,17 @@ prompt = ChatPromptTemplate.from_messages([("system","You are a powerfull Assist
                                            ("human","{input}"),
                                            ("placeholder","{agent_scratchpad}")])
 
-tools = [tavily_tool]
 
 
+@tool
+def word_count(word):
+    """
+    This is function takes a string and returns the length of it
+    """
+    print(word)
+    return len(word)
+
+tools = [tavily_tool, word_count]
 
 search_agent = create_tool_calling_agent(llm,tools,prompt)
 
@@ -42,7 +50,7 @@ def ask(prompt):
         
 
 # st.write("Search Agent")
-st.title("Search Agent")
+st.title("Database Agent")
 
 #Chat history
 if "messages" not in st.session_state:
@@ -58,7 +66,7 @@ if prompt := st.chat_input():
     with st.chat_message('user'):
         st.markdown(prompt)
     st.session_state.messages.append({'role':'user', 'content':prompt})
-    with st.spinner('Generating..'):
+    with st.spinner('Generating...'):
         chat_history = "\n".join([f"{history['role']}:{history['content']}" for history in st.session_state.messages])
         chat_history += prompt
         # print("\n".join([f"{data['role']}:{data['content']}" for data in st.session_state.messages]))
